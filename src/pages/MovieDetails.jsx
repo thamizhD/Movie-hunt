@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom";
 import venom from "../assets/venom.jpg"
 import { convertMinutes } from "../utils/utils";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -12,10 +13,20 @@ export const MovieDetails = () => {
   const key = import.meta.env.VITE_API_KEY; 
   const url =`https://api.themoviedb.org/3/movie/${params.id}?api_key=${key}`; 
   const  image = movie.poster_path ? `https://image.tmdb.org/t/p/original${movie.poster_path}` : venom;
+  const navigate = useNavigate();
 
     useEffect(()=>{
-        async function fetchMovies() {
-            fetch(url).then((res)=>res.json()).then((jsonData)=>setMovie(jsonData))
+        async function fetchMovies() {   
+          // api request 
+          fetch(url)
+          .then((res) => {
+            if (!res.ok) {
+              navigate("*"); 
+            }
+            return res.json();
+          })
+          .then((jsonData) => setMovie(jsonData))
+          
             
         };
         fetchMovies();
